@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    <title>Java 文件读取 | 时秋的博客 | Talk is cheap , show your code .</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="Java">
+    <meta name="description" content="背景在Java开发过程中，偶尔需要获取一个文件(最常见的就是获取配置文件)，但是经常遇到找不到文件的异常；通常有两种情况：
+
+文件路径不正确；
+文件名不正确；
+
+绝大多数异常都是由文件路径不正确导致。但是文件路径应该怎么描述呢？再加上绝对路径，相对路径，想想头大，每次都是尝试好多遍都不一定能搞定；so，在此记录下关于Java中获取文件路径的方法。
+文件路径获取目前Java中获取文件路径主要有如下几">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java 文件读取">
+<meta property="og:url" content="https://shiqiupp.github.io/2017/04/10/java-fileread/index.html">
+<meta property="og:site_name" content="时秋的博客">
+<meta property="og:description" content="背景在Java开发过程中，偶尔需要获取一个文件(最常见的就是获取配置文件)，但是经常遇到找不到文件的异常；通常有两种情况：
+
+文件路径不正确；
+文件名不正确；
+
+绝大多数异常都是由文件路径不正确导致。但是文件路径应该怎么描述呢？再加上绝对路径，相对路径，想想头大，每次都是尝试好多遍都不一定能搞定；so，在此记录下关于Java中获取文件路径的方法。
+文件路径获取目前Java中获取文件路径主要有如下几">
+<meta property="og:updated_time" content="2017-04-11T07:32:49.397Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Java 文件读取">
+<meta name="twitter:description" content="背景在Java开发过程中，偶尔需要获取一个文件(最常见的就是获取配置文件)，但是经常遇到找不到文件的异常；通常有两种情况：
+
+文件路径不正确；
+文件名不正确；
+
+绝大多数异常都是由文件路径不正确导致。但是文件路径应该怎么描述呢？再加上绝对路径，相对路径，想想头大，每次都是尝试好多遍都不一定能搞定；so，在此记录下关于Java中获取文件路径的方法。
+文件路径获取目前Java中获取文件路径主要有如下几">
+    
+        <link rel="alternative" href="/atom.xml" title="时秋的博客" type="application/atom+xml">
+    
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" href="/css/style.css?v=1.5.0">
+    <script>window.lazyScripts=[]</script>
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu" class="hide" >
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">时秋</h5>
+          <a href="mailto:shiqiu-beta@qq.com" title="shiqiu-beta@qq.com" class="mail">shiqiu-beta@qq.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/"  >
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives"  >
+                <i class="icon icon-lg icon-archives"></i>
+                列表
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags"  >
+                <i class="icon icon-lg icon-tags"></i>
+                标签
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories"  >
+                <i class="icon icon-lg icon-th-list"></i>
+                分类
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/shiqiupp" target="_blank" >
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/weibo" target="_blank" >
+                <i class="icon icon-lg icon-weibo"></i>
+                围脖
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/aboutme"  >
+                <i class="icon icon-lg icon-link"></i>
+                关于我
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">Java 文件读取</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+        <span>
+            <a href="/atom.xml" target="_blank" class="header-icon waves-effect waves-circle waves-light" title="rss">
+                <i class="icon icon-lg icon-rss"></i>
+            </a>
+        </span>
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale" style="    padding-top: 10px;">
+        <h1 class="title">Java 文件读取</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2017-04-10T09:32:46.000Z" itemprop="datePublished" class="page-time">
+  2017-04-10
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/Java/">Java</a></li></ul>
+
+            
+        </h5>
+    </div>
+
+    
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#背景"><span class="post-toc-number">1.</span> <span class="post-toc-text">背景</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#文件路径获取"><span class="post-toc-number">2.</span> <span class="post-toc-text">文件路径获取</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#文件读取"><span class="post-toc-number">3.</span> <span class="post-toc-text">文件读取</span></a></li></ol>
+        </nav>
+    </aside>
+    
+<article id="post-java-fileread"
+  class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">Java 文件读取</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2017年04月10日 17:32" datetime="2017-04-10T09:32:46.000Z"  itemprop="datePublished">2017-04-10</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/Java/">Java</a></li></ul>
+
+
+
+            
+
+            
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <h1 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h1><p>在Java开发过程中，偶尔需要获取一个文件(最常见的就是获取配置文件)，但是经常遇到找不到文件的异常；通常有两种情况：</p>
+<ol>
+<li>文件路径不正确；</li>
+<li>文件名不正确；</li>
+</ol>
+<p>绝大多数异常都是由文件路径不正确导致。但是文件路径应该怎么描述呢？再加上绝对路径，相对路径，想想头大，每次都是尝试好多遍都不一定能搞定；so，在此记录下关于Java中获取文件路径的方法。</p>
+<h1 id="文件路径获取"><a href="#文件路径获取" class="headerlink" title="文件路径获取"></a>文件路径获取</h1><p>目前Java中获取文件路径主要有如下几种方式：<br>注：文中出现的 ‘Xxxx’ 为具体某个类名；操作系统为win7；</p>
+<ol>
+<li><p>Xxxx.class.getResource(“”)</p>
+<blockquote>
+<p>得到的是Xxxx.class类文件所在的文件目录(当前类文件的绝对URI目录)。如：file:/D:/Projects/path-study/target/classes/com/beta/study/<br>Xxxx.class.getResource(“”).getPath() 可以获取不带前缀的文件路径。如： /D:/Projects/path-study/target/classes/com/beta/study/</p>
+</blockquote>
+</li>
+<li><p>Xxxx.class.getResource(“/“)</p>
+<blockquote>
+<p>得到的是Xxxx.class类文件所在的类文件根目录(当前类文件classpath的绝对URI目录)。如：file:/D:/Projects/path-study/target/classes/<br>Xxxx.class.getResource(“/“).getPath() 可以获取不带前缀的文件路径。如： /D:/Projects/path-study/target/classes/</p>
+</blockquote>
+</li>
+<li><p>Xxxx.class.getClassLoader().getResource(“”)</p>
+<blockquote>
+<p>注意此处getResource()参数中没有 / ，如果这样Xxxx.class.getClassLoader().getResource(“/“) 将得到null(jdk7，jdk8)<br>得到的是Xxxx.class类文件所在的类文件根目录(当前类文件classpath的绝对URI目录)。如：file:/D:/Projects/path-study/target/classes/<br>Xxxx.class.getClassLoader().getResource(“/“).getPath() 可以获取不带前缀的文件路径。如： /D:/Projects/path-study/target/classes/</p>
+</blockquote>
+</li>
+<li><p>ClassLoader.getSystemResource(“”)</p>
+<blockquote>
+<p>getSystemResource()参数中没有 / ，如果这样ClassLoader.getSystemResource(“”) 将得到null(jdk7，jdk8)<br>得到的是当前类文件classpath的绝对URI目录。如：file:/D:/Projects/path-study/target/classes/<br>ClassLoader.getSystemResource(“”).getPath() 可以获取不带前缀的文件路径。如： /D:/Projects/path-study/target/classes/</p>
+</blockquote>
+</li>
+<li><p>Thread.currentThread().getContextClassLoader().getResource(“”)</p>
+<blockquote>
+<p>得到的是当前类文件classpath的绝对URI目录。如：file:/D:/Projects/path-study/target/classes/<br>Thread.currentThread().getContextClassLoader ().getResource(“”).getPath() 可以获取不带前缀的文件路径。如： /D:/Projects/path-study/target/classes/</p>
+</blockquote>
+</li>
+<li><p>System.getProperty(“java.class.path”)</p>
+<blockquote>
+<p>获取java -classpath 执行参数指定下的路径。默认为执行时当前CLASS_PATH环境变量；<br>如果用java -classpath “D:\Projects” Xxxx  ; 那么结果为：D:\Projects ；注意要保证 Xxxx.class 在 D:\Projects 下面；</p>
+</blockquote>
+</li>
+</ol>
+<h1 id="文件读取"><a href="#文件读取" class="headerlink" title="文件读取"></a>文件读取</h1><p>文件读取一般有两种方式：</p>
+<p>1.使用jdk的File api ：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">File file = <span class="keyword">new</span> File(<span class="string">"文件路径"</span>);</div></pre></td></tr></table></figure></p>
+<p>File构造函数参数为文件的路径，可以是绝对路径(如：D:/Projects/path-study/target/classes/test.properties)，也可以是相对路径(test.properties)；<br>如果是相对路径，那么jdk会根据user.dir属性值+相对路径作为文件的路径；系统属性 user.dir是JVM启动的时候设置的，通常是 Java 虚拟机的调用目录，即执行java命令所在的目录；<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//如果当前工作目录为D:/Projects/path-study  那么下面代码等价</span></div><div class="line">File file = <span class="keyword">new</span> File(<span class="string">"test.properties"</span>);</div><div class="line"></div><div class="line"><span class="comment">// 等价于(其中System.getProperty("user.dir") = D:/Projects/path-study)：</span></div><div class="line">File file = <span class="keyword">new</span> File(System.getProperty(<span class="string">"user.dir"</span>) + <span class="string">"/test.properties"</span>);</div></pre></td></tr></table></figure></p>
+<p>so，用File读取文件有隐藏的路径含义，对于实际项目，开发和线上部署环境经常不同，如果用 File file = new File(“文件路径”);来读取文件，那么文件路径将会很头大，所以可以采用其他方式读取，降低FileNotFoundException出现的概率；当然也可以通过上述路径获取方式来获取文件的路径前缀，但是显得不够直接，容易出问题；</p>
+<p>2.使用Class.getResource()或ClassLoader.getResource()<br>ClassLoader.getResource() 其中ClassLoader与如下两种也等价：</p>
+<ul>
+<li>Xxxx.class.getClassLoader()</li>
+<li>Thread.currentThread().getContextClassLoader()</li>
+</ul>
+<p>假设Xxxx.class当前目录为：D:/Projects/path-study/target/classes/com/beta/study/<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">Xxxx.class.getResource(<span class="string">"test.properties"</span>);  <span class="comment">//读取D:/Projects/path-study/target/classes/com/beta/study/test.properties或者其他jar中com/beta/study/test.properties</span></div><div class="line">Xxxx.class.getResource(<span class="string">"/test.properties"</span>);  <span class="comment">//读取D:/Projects/path-study/target/classes/test.properties或者其他jar中test.properties</span></div><div class="line">        </div><div class="line">Xxxx.class.getClassLoader().getResource(<span class="string">"test.properties"</span>);  <span class="comment">//读取D:/Projects/path-study/target/classes/test.properties或者其他jar中test.properties</span></div></pre></td></tr></table></figure></p>
+<ul>
+<li>Class.getResource()有2种方式，绝对路径和相对路径。绝对路径以/开头，从classpath或jar包根目录下开始搜索；相对路径是相对当前class所在的目录，允许使用..或.来定位文件。</li>
+<li>ClassLoader.getResource()只能使用绝对路径，而且不用以/开头。</li>
+</ul>
+<p>这两种方式读取资源文件，不会依赖于user.dir，也不会依赖于具体部署的环境，是推荐的做法。</p>
+<p>我现在要读取其他jar中的文件，怎么办呢？？？<br>实际上上述两种方式使用相对路径或绝对路径都能读取本jar或其他jar中的资源文件。但区别是，读取本jar包中的文件支持..这种写法，但是不能通过..读取其他jar下的文件。<br>假设Xxxx.class的包路径为：com.beta.study，那么：</p>
+<blockquote>
+<p>Xxxx.class.getResource(“test.properties”);<br>读取com/beta/study/test.properties 的文件，无论是本jar，还是其他jar中的文件；只要保证相对路径一致；<br>也可以采用如下方式读取：<br>Xxxx.class.getResource(“/com/beta/study/test.properties”);<br>Xxxx.class.getClassLoader().getResource(“com/beta/study/test.properties”);</p>
+</blockquote>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    <div class="content">
+        
+<span class="post-time">
+    最后更新时间：<time datetime="2017-04-11T07:32:49.397Z" itemprop="dateUpdated">2017年4月11日 15:32</time>
+</span><br>
+
+
+        
+    </div>
+    <footer>
+        <a href="https://shiqiupp.github.io">
+            <img src="/img/avatar.jpg" alt="时秋">
+            时秋
+        </a>
+    </footer>
+</blockquote>
+
+        
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Java/">Java</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://shiqiupp.github.io/2017/04/10/java-fileread/&title=《Java 文件读取》 — 时秋的博客&pic=https://shiqiupp.github.io/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://shiqiupp.github.io/2017/04/10/java-fileread/&title=《Java 文件读取》 — 时秋的博客&source=时秋的博客" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://shiqiupp.github.io/2017/04/10/java-fileread/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Java 文件读取》 — 时秋的博客&url=https://shiqiupp.github.io/2017/04/10/java-fileread/&via=https://shiqiupp.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://shiqiupp.github.io/2017/04/10/java-fileread/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between flex-row-reverse">
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2017/04/01/springboot-multi-datasources/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">SpringBoot 多数据源实例</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+</div>
+
+        <footer class="footer">
+
+    <div class="bottom">
+        <p>
+            <span>Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a></span>
+            <span>时秋的博客 &copy; 2017</span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://shiqiupp.github.io/2017/04/10/java-fileread/&title=《Java 文件读取》 — 时秋的博客&pic=https://shiqiupp.github.io/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://shiqiupp.github.io/2017/04/10/java-fileread/&title=《Java 文件读取》 — 时秋的博客&source=时秋的博客" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://shiqiupp.github.io/2017/04/10/java-fileread/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Java 文件读取》 — 时秋的博客&url=https://shiqiupp.github.io/2017/04/10/java-fileread/&via=https://shiqiupp.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://shiqiupp.github.io/2017/04/10/java-fileread/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMYAAADGCAAAAACs8KCBAAACNklEQVR42u3aOW4DMRBEUd3/0uPEgQFBo19FSjDJz8iwNr4JGr09HvhcLw55/9//PL/n/lOTjwwZMpZlXLenYzxftPtmcjcZMmScwyCXIMFx7qfI3WTIkCHj/j0kpbsPo93vypAhQwYPnTztI8UtKX1lyJBxMoMUkyThS18lqeHkWlyGDBkLMnjX/ft/f2S+IUOGjKUYV3hIIpiG2pH7/H6nDBkytmbwAJeWqXyc2QVcGTJknMZIlyR4escLVz7gHMpnZciQsSBjpIFFLsGHlyOPSYYMGScwSBnJB5lpQ79LE2XIkHEyI03RutWK9AG9Cc0yZMg4hhE34nHbq0z45rbVZMiQsSyja7qRFliaCJIQX3YTZciQsRGjC4hdccu7+ulNZMiQsR+Dr1B0jX4SxNNXX26LyJAhY1NGl8x162LdWDTeGZEhQ8bWjJHDl8D440iHEDJkyNibMXdhosOUHcHP7X3IkCHj3zB4oZhecXwwGaSJMmTI2JrBlyHmFqVd6okmGzJkyNiakV6Cp4O8nUfWW18OD2TIkHEMIy1c0+A4kibG7TYZMmQcw+DtuZHmHU8iy4ArQ4aMZRlXeEj4G08Z0wRRhgwZezPG1ynSFj/5LC9fy2mtDBkyFmR0Da80UPKmXjmKkCFDxgGMrlhNW3XkMU2oxWXIkCGjCo5pYI2pMmTIkBH+TLc2wcelb0aYMmTI2JQxktKlY4OukTet3SZDhowFGV3pmP4MH212owIZMmRsyvgBCLCyUK8QbjIAAAAASUVORK5CYII=" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: false };
+
+
+
+</script>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@1.5.0/source/js/main.min.js"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@1.5.0/source/js/search.min.js" async></script>
+
+
+
+
+
+
+
+
+<script>
+(function() {
+    var OriginTitile = document.title, titleTime;
+    document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+            document.title = '';
+            clearTimeout(titleTime);
+        } else {
+            document.title = '';
+            titleTime = setTimeout(function() {
+                document.title = OriginTitile;
+            },2000);
+        }
+    });
+})();
+</script>
+
+
+
+</body>
+</html>

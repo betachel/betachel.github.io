@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    <title>SpringBoot 多数据源实例 | 时秋的博客 | Talk is cheap , show your code .</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="Java,SpringBoot,多数据源">
+    <meta name="description" content="需求背景大多数时候，一个项目不仅依赖一个数据源，往往需要多个数据源。如果项目使用SpringBoot+Mybatis结合进行数据持久层，在不采用传统的配置文件情况下，怎么通过注解的方式配置多个数据源呢？下面一一道来。如果读者还没有springboot的项目，推荐官方demo搭建平台：https://start.spring.io/完整代码详见：Github
+环境说明
+jdk1.7  , Sprin">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SpringBoot 多数据源实例">
+<meta property="og:url" content="https://shiqiupp.github.io/2017/04/01/springboot-multi-datasources/index.html">
+<meta property="og:site_name" content="时秋的博客">
+<meta property="og:description" content="需求背景大多数时候，一个项目不仅依赖一个数据源，往往需要多个数据源。如果项目使用SpringBoot+Mybatis结合进行数据持久层，在不采用传统的配置文件情况下，怎么通过注解的方式配置多个数据源呢？下面一一道来。如果读者还没有springboot的项目，推荐官方demo搭建平台：https://start.spring.io/完整代码详见：Github
+环境说明
+jdk1.7  , Sprin">
+<meta property="og:updated_time" content="2017-04-11T07:32:52.188Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="SpringBoot 多数据源实例">
+<meta name="twitter:description" content="需求背景大多数时候，一个项目不仅依赖一个数据源，往往需要多个数据源。如果项目使用SpringBoot+Mybatis结合进行数据持久层，在不采用传统的配置文件情况下，怎么通过注解的方式配置多个数据源呢？下面一一道来。如果读者还没有springboot的项目，推荐官方demo搭建平台：https://start.spring.io/完整代码详见：Github
+环境说明
+jdk1.7  , Sprin">
+    
+        <link rel="alternative" href="/atom.xml" title="时秋的博客" type="application/atom+xml">
+    
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" href="/css/style.css?v=1.5.0">
+    <script>window.lazyScripts=[]</script>
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu" class="hide" >
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">时秋</h5>
+          <a href="mailto:shiqiu-beta@qq.com" title="shiqiu-beta@qq.com" class="mail">shiqiu-beta@qq.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/"  >
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives"  >
+                <i class="icon icon-lg icon-archives"></i>
+                列表
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags"  >
+                <i class="icon icon-lg icon-tags"></i>
+                标签
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories"  >
+                <i class="icon icon-lg icon-th-list"></i>
+                分类
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/shiqiupp" target="_blank" >
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/weibo" target="_blank" >
+                <i class="icon icon-lg icon-weibo"></i>
+                围脖
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/aboutme"  >
+                <i class="icon icon-lg icon-link"></i>
+                关于我
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">SpringBoot 多数据源实例</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+        <span>
+            <a href="/atom.xml" target="_blank" class="header-icon waves-effect waves-circle waves-light" title="rss">
+                <i class="icon icon-lg icon-rss"></i>
+            </a>
+        </span>
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale" style="    padding-top: 10px;">
+        <h1 class="title">SpringBoot 多数据源实例</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2017-04-01T01:12:01.870Z" itemprop="datePublished" class="page-time">
+  2017-04-01
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/Java/">Java</a><ul class="article-category-list-child"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/Java/SpringBoot/">SpringBoot</a></li></ul></li></ul>
+
+            
+        </h5>
+    </div>
+
+    
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#需求背景"><span class="post-toc-number">1.</span> <span class="post-toc-text">需求背景</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#环境说明"><span class="post-toc-number">2.</span> <span class="post-toc-text">环境说明</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#代码实现"><span class="post-toc-number">3.</span> <span class="post-toc-text">代码实现</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#配置文件"><span class="post-toc-number">3.1.</span> <span class="post-toc-text">配置文件</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#代码实现-1"><span class="post-toc-number">3.2.</span> <span class="post-toc-text">代码实现</span></a></li></ol></li></ol>
+        </nav>
+    </aside>
+    
+<article id="post-springboot-multi-datasources"
+  class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">SpringBoot 多数据源实例</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2017年04月01日 9:12" datetime="2017-04-01T01:12:01.870Z"  itemprop="datePublished">2017-04-01</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/Java/">Java</a><ul class="article-category-list-child"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/Java/SpringBoot/">SpringBoot</a></li></ul></li></ul>
+
+
+
+            
+
+            
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <h1 id="需求背景"><a href="#需求背景" class="headerlink" title="需求背景"></a>需求背景</h1><p>大多数时候，一个项目不仅依赖一个数据源，往往需要多个数据源。如果项目使用SpringBoot+Mybatis结合进行数据持久层，在不采用传统的配置文件情况下，怎么通过注解的方式配置多个数据源呢？下面一一道来。<br>如果读者还没有springboot的项目，推荐官方demo搭建平台：<a href="https://start.spring.io/" target="_blank" rel="external">https://start.spring.io/</a><br>完整代码详见：<a href="https://github.com/shiqiupp/spring-boot-multi-datasources" target="_blank" rel="external">Github</a></p>
+<h1 id="环境说明"><a href="#环境说明" class="headerlink" title="环境说明"></a>环境说明</h1><blockquote>
+<p>jdk1.7  , SpringBoot : 1.5.2.RELEASE , 数据源采用dbcp2 commons-dbcp2 : 2.1.1</p>
+</blockquote>
+<p>maven依赖如下：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div></pre></td><td class="code"><pre><div class="line">&lt;dependency&gt;</div><div class="line">    &lt;!-- Import dependency management from Spring Boot --&gt;</div><div class="line">    &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;</div><div class="line">    &lt;artifactId&gt;spring-boot-dependencies&lt;/artifactId&gt;</div><div class="line">    &lt;version&gt;1.5.2.RELEASE&lt;/version&gt;</div><div class="line">    &lt;type&gt;pom&lt;/type&gt;</div><div class="line">    &lt;scope&gt;import&lt;/scope&gt;</div><div class="line">&lt;/dependency&gt;</div><div class="line">&lt;dependency&gt;</div><div class="line">    &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;</div><div class="line">    &lt;artifactId&gt;spring-boot-starter-web&lt;/artifactId&gt;</div><div class="line">    &lt;version&gt;1.5.2.RELEASE&lt;/version&gt;</div><div class="line">    &lt;exclusions&gt;</div><div class="line">        &lt;exclusion&gt;</div><div class="line">            &lt;groupId&gt;ch.qos.logback&lt;/groupId&gt;</div><div class="line">            &lt;artifactId&gt;logback-classic&lt;/artifactId&gt;</div><div class="line">        &lt;/exclusion&gt;</div><div class="line">        &lt;exclusion&gt;</div><div class="line">            &lt;groupId&gt;ch.qos.logback&lt;/groupId&gt;</div><div class="line">            &lt;artifactId&gt;logback-core&lt;/artifactId&gt;</div><div class="line">        &lt;/exclusion&gt;</div><div class="line">    &lt;/exclusions&gt;</div><div class="line">&lt;/dependency&gt;</div><div class="line"></div><div class="line">&lt;!-- log , 按需配置 --&gt;</div><div class="line">&lt;dependency&gt;</div><div class="line">    &lt;groupId&gt;ch.qos.logback&lt;/groupId&gt;</div><div class="line">    &lt;artifactId&gt;logback-classic&lt;/artifactId&gt;</div><div class="line">    &lt;version&gt;1.0.6&lt;/version&gt;</div><div class="line">&lt;/dependency&gt;</div><div class="line">&lt;dependency&gt;</div><div class="line">    &lt;groupId&gt;ch.qos.logback&lt;/groupId&gt;</div><div class="line">    &lt;artifactId&gt;logback-core&lt;/artifactId&gt;</div><div class="line">    &lt;version&gt;1.0.6&lt;/version&gt;</div><div class="line">&lt;/dependency&gt;</div><div class="line"></div><div class="line">&lt;!--  mybatis --&gt;</div><div class="line">&lt;dependency&gt;</div><div class="line">    &lt;groupId&gt;org.mybatis.spring.boot&lt;/groupId&gt;</div><div class="line">    &lt;artifactId&gt;mybatis-spring-boot-starter&lt;/artifactId&gt;</div><div class="line">    &lt;version&gt;1.2.0&lt;/version&gt;</div><div class="line">&lt;/dependency&gt;</div><div class="line"></div><div class="line">&lt;dependency&gt;</div><div class="line">    &lt;groupId&gt;org.apache.commons&lt;/groupId&gt;</div><div class="line">    &lt;artifactId&gt;commons-dbcp2&lt;/artifactId&gt;</div><div class="line">    &lt;version&gt;2.1.1&lt;/version&gt;</div><div class="line">&lt;/dependency&gt;</div><div class="line"></div><div class="line">&lt;dependency&gt;</div><div class="line">    &lt;groupId&gt;mysql&lt;/groupId&gt;</div><div class="line">    &lt;artifactId&gt;mysql-connector-java&lt;/artifactId&gt;</div><div class="line">    &lt;version&gt;5.1.41&lt;/version&gt;</div><div class="line">&lt;/dependency&gt;</div></pre></td></tr></table></figure>
+<h1 id="代码实现"><a href="#代码实现" class="headerlink" title="代码实现"></a>代码实现</h1><h2 id="配置文件"><a href="#配置文件" class="headerlink" title="配置文件"></a>配置文件</h2><p>首先新建数据源配置文件(recources/datasource.properties)，主要内容可参考如下：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">jdbc.driver=com.mysql.jdbc.Driver</div><div class="line">jdbc.url=jdbc:mysql:<span class="comment">//127.0.0.1:3306/test?useUnicode=true&amp;characterEncoding=utf8&amp;useJDBCCompliantTimezoneShift=true&amp;useLegacyDatetimeCode=false&amp;serverTimezone=UTC&amp;useSSL=true</span></div><div class="line">jdbc.username=root</div><div class="line">jdbc.password=xxxxxxxx</div><div class="line">jdbc.maxActive=<span class="number">2335</span></div><div class="line">jdbc.maxIdel=<span class="number">120</span></div></pre></td></tr></table></figure></p>
+<h2 id="代码实现-1"><a href="#代码实现-1" class="headerlink" title="代码实现"></a>代码实现</h2><p>tips: 所有的bean最好有名字，后续通过注解依赖注入式，可根据名字指定注入对应的bean;</p>
+<p>新增一个默认数据源配置的类：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> javax.sql.DataSource;</div><div class="line"><span class="keyword">import</span> org.apache.commons.dbcp2.BasicDataSource;</div><div class="line"><span class="keyword">import</span> org.apache.ibatis.session.SqlSessionFactory;</div><div class="line"><span class="keyword">import</span> org.mybatis.spring.SqlSessionFactoryBean;</div><div class="line"><span class="keyword">import</span> org.mybatis.spring.annotation.MapperScan;</div><div class="line"><span class="keyword">import</span> org.springframework.beans.factory.annotation.Qualifier;</div><div class="line"><span class="keyword">import</span> org.springframework.beans.factory.annotation.Value;</div><div class="line"><span class="keyword">import</span> org.springframework.context.annotation.Bean;</div><div class="line"><span class="keyword">import</span> org.springframework.context.annotation.Configuration;</div><div class="line"><span class="keyword">import</span> org.springframework.context.annotation.Primary;</div><div class="line"><span class="keyword">import</span> org.springframework.context.annotation.PropertySource;</div><div class="line"><span class="keyword">import</span> org.springframework.jdbc.datasource.DataSourceTransactionManager;</div><div class="line"></div><div class="line"><span class="meta">@Configuration</span></div><div class="line"><span class="meta">@PropertySource</span>(<span class="string">"classpath:datasource.properties"</span>)<span class="comment">//指定配置文件的路径和名字，按照实际配置</span></div><div class="line"><span class="meta">@MapperScan</span>(basePackages =  DefaultDataSourceConfig.SCAN_PACKAGE , sqlSessionFactoryRef = <span class="string">"defaultSqlSessionFactory"</span> <span class="comment">/**  指定name=defaultSqlSessionFactory 的 sessionFactory **/</span>)</div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">DefaultDataSourceConfig</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="keyword">final</span> <span class="keyword">static</span> String SCAN_PACKAGE = <span class="string">"com.beta.study.mapper.jdbc"</span>;</div><div class="line"></div><div class="line">    <span class="meta">@Value</span>(<span class="string">"$&#123;jdbc.driver&#125;"</span>)</div><div class="line">    <span class="keyword">private</span> String driver;</div><div class="line">    <span class="meta">@Value</span>(<span class="string">"$&#123;jdbc.url&#125;"</span>)</div><div class="line">    <span class="keyword">private</span> String url;</div><div class="line">    <span class="meta">@Value</span>(<span class="string">"$&#123;jdbc.username&#125;"</span>)</div><div class="line">    <span class="keyword">private</span> String username;</div><div class="line">    <span class="meta">@Value</span>(<span class="string">"$&#123;jdbc.password&#125;"</span>)</div><div class="line">    <span class="keyword">private</span> String password;</div><div class="line">    <span class="meta">@Value</span>(<span class="string">"$&#123;jdbc.maxActive&#125;"</span>)</div><div class="line">    <span class="keyword">private</span> <span class="keyword">int</span> maxActive;</div><div class="line">    <span class="meta">@Value</span>(<span class="string">"$&#123;jdbc.maxIdel&#125;"</span>)</div><div class="line">    <span class="keyword">private</span> <span class="keyword">int</span> maxIdel;</div><div class="line"></div><div class="line">    <span class="meta">@Bean</span>(name=<span class="string">"dataSource"</span>)</div><div class="line">    <span class="meta">@Primary</span> <span class="comment">// 多个数据源，一定要有有一个关键的数据源</span></div><div class="line">    <span class="function"><span class="keyword">public</span> DataSource <span class="title">getDataSource</span><span class="params">()</span> </span>&#123;</div><div class="line">        BasicDataSource dataSource = <span class="keyword">new</span> BasicDataSource();</div><div class="line">        dataSource.setDriverClassName(driver);</div><div class="line">        dataSource.setUrl(url);</div><div class="line">        dataSource.setUsername(username);</div><div class="line">        dataSource.setPassword(password);</div><div class="line">        dataSource.setMaxConnLifetimeMillis(maxActive);</div><div class="line">        dataSource.setMaxIdle(maxIdel);</div><div class="line">        dataSource.setValidationQuery(<span class="string">"SELECT 1"</span>);</div><div class="line">        dataSource.setTestOnBorrow(<span class="keyword">true</span>);</div><div class="line">        <span class="keyword">return</span> dataSource;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">//这是配置数据源事务，不需要事务不需要配置</span></div><div class="line">    <span class="meta">@Bean</span>(name = <span class="string">"defaultTransactionManager"</span>)</div><div class="line">    <span class="meta">@Primary</span></div><div class="line">    <span class="function"><span class="keyword">public</span> DataSourceTransactionManager <span class="title">defaultDataSourceTransactionManager</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> <span class="keyword">new</span> DataSourceTransactionManager(getDataSource());</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Bean</span>(name = <span class="string">"defaultSqlSessionFactory"</span>)</div><div class="line">    <span class="meta">@Primary</span></div><div class="line">    <span class="function"><span class="keyword">public</span> SqlSessionFactory <span class="title">defaultSqlSessionFactory</span><span class="params">(@Qualifier(<span class="string">"dataSource"</span>)</span>DataSource dataSource  <span class="comment">/**@Qualifier指定注入name=dataSource 的数据源 **/</span>) <span class="keyword">throws</span> Exception </span>&#123;</div><div class="line">        <span class="keyword">final</span> SqlSessionFactoryBean sessionFactory = <span class="keyword">new</span> SqlSessionFactoryBean();</div><div class="line">        sessionFactory.setDataSource(dataSource);</div><div class="line">        <span class="keyword">return</span> sessionFactory.getObject();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>新增一个其他的数据源类（为了测试，两个数据源其实对应同一个数据库）：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> javax.sql.DataSource;</div><div class="line"><span class="keyword">import</span> org.apache.commons.dbcp2.BasicDataSource;</div><div class="line"><span class="keyword">import</span> org.apache.ibatis.session.SqlSessionFactory;</div><div class="line"><span class="keyword">import</span> org.mybatis.spring.SqlSessionFactoryBean;</div><div class="line"><span class="keyword">import</span> org.mybatis.spring.annotation.MapperScan;</div><div class="line"><span class="keyword">import</span> org.springframework.beans.factory.annotation.Qualifier;</div><div class="line"><span class="keyword">import</span> org.springframework.beans.factory.annotation.Value;</div><div class="line"><span class="keyword">import</span> org.springframework.context.annotation.Bean;</div><div class="line"><span class="keyword">import</span> org.springframework.context.annotation.Configuration;</div><div class="line"><span class="keyword">import</span> org.springframework.context.annotation.PropertySource;</div><div class="line"><span class="keyword">import</span> org.springframework.jdbc.datasource.DataSourceTransactionManager;</div><div class="line"></div><div class="line"></div><div class="line"><span class="meta">@Configuration</span></div><div class="line"><span class="meta">@PropertySource</span>(<span class="string">"classpath:datasource.properties"</span>)</div><div class="line"><span class="meta">@MapperScan</span>(basePackages =  SecondDataSourceConfig.SCAN_PACKAGE , sqlSessionFactoryRef = <span class="string">"secondSqlSessionFactory"</span>)</div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SecondDataSourceConfig</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="keyword">final</span> <span class="keyword">static</span> String SCAN_PACKAGE = <span class="string">"com.beta.study.mapper.secondjdbc"</span>;</div><div class="line"></div><div class="line">    <span class="meta">@Value</span>(<span class="string">"$&#123;jdbc.driver&#125;"</span>)</div><div class="line">    <span class="keyword">private</span> String driver;</div><div class="line">    <span class="meta">@Value</span>(<span class="string">"$&#123;jdbc.url&#125;"</span>)</div><div class="line">    <span class="keyword">private</span> String url;</div><div class="line">    <span class="meta">@Value</span>(<span class="string">"$&#123;jdbc.username&#125;"</span>)</div><div class="line">    <span class="keyword">private</span> String username;</div><div class="line">    <span class="meta">@Value</span>(<span class="string">"$&#123;jdbc.password&#125;"</span>)</div><div class="line">    <span class="keyword">private</span> String password;</div><div class="line">    <span class="meta">@Value</span>(<span class="string">"$&#123;jdbc.maxActive&#125;"</span>)</div><div class="line">    <span class="keyword">private</span> <span class="keyword">int</span> maxActive;</div><div class="line">    <span class="meta">@Value</span>(<span class="string">"$&#123;jdbc.maxIdel&#125;"</span>)</div><div class="line">    <span class="keyword">private</span> <span class="keyword">int</span> maxIdel;</div><div class="line"></div><div class="line">    <span class="meta">@Bean</span>(name=<span class="string">"secondDataSource"</span>)</div><div class="line">    <span class="function"><span class="keyword">public</span> DataSource <span class="title">getDataSource</span><span class="params">()</span> </span>&#123;</div><div class="line">        BasicDataSource dataSource = <span class="keyword">new</span> BasicDataSource();</div><div class="line">        dataSource.setDriverClassName(driver);</div><div class="line">        dataSource.setUrl(url);</div><div class="line">        dataSource.setUsername(username);</div><div class="line">        dataSource.setPassword(password);</div><div class="line">        dataSource.setMaxConnLifetimeMillis(maxActive);</div><div class="line">        dataSource.setMaxIdle(maxIdel);</div><div class="line">        dataSource.setValidationQuery(<span class="string">"SELECT 1"</span>);</div><div class="line">        dataSource.setTestOnBorrow(<span class="keyword">true</span>);</div><div class="line">        <span class="keyword">return</span> dataSource;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Bean</span>(name = <span class="string">"secondTransactionManager"</span>)</div><div class="line">    <span class="function"><span class="keyword">public</span> DataSourceTransactionManager <span class="title">defaultDataSourceTransactionManager</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> <span class="keyword">new</span> DataSourceTransactionManager(getDataSource());</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Bean</span>(name = <span class="string">"secondSqlSessionFactory"</span>)</div><div class="line">    <span class="function"><span class="keyword">public</span> SqlSessionFactory <span class="title">defaultSqlSessionFactory</span><span class="params">(@Qualifier(<span class="string">"secondDataSource"</span>)</span>DataSource dataSource) <span class="keyword">throws</span> Exception </span>&#123;</div><div class="line">        <span class="keyword">final</span> SqlSessionFactoryBean sessionFactory = <span class="keyword">new</span> SqlSessionFactoryBean();</div><div class="line">        sessionFactory.setDataSource(dataSource);</div><div class="line">        <span class="keyword">return</span> sessionFactory.getObject();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>对应mapper的类，注意具体的package名<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> com.beta.study.mapper.jdbc;</div><div class="line"></div><div class="line"><span class="keyword">import</span> java.util.List;</div><div class="line"><span class="keyword">import</span> com.beta.study.User;</div><div class="line"><span class="keyword">import</span> org.apache.ibatis.annotations.Mapper;</div><div class="line"><span class="keyword">import</span> org.apache.ibatis.annotations.Result;</div><div class="line"><span class="keyword">import</span> org.apache.ibatis.annotations.Results;</div><div class="line"><span class="keyword">import</span> org.apache.ibatis.annotations.Select;</div><div class="line"><span class="keyword">import</span> org.apache.ibatis.type.JdbcType;</div><div class="line"></div><div class="line"></div><div class="line"><span class="meta">@Mapper</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">UserMapper</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="meta">@Select</span>(<span class="string">"select * from user"</span>)</div><div class="line">    <span class="meta">@Results</span>(value = &#123;</div><div class="line">        <span class="meta">@Result</span>(id = <span class="keyword">true</span>,column = <span class="string">"id"</span>,property = <span class="string">"id"</span>,jdbcType = JdbcType.INTEGER,javaType = Integer.class),</div><div class="line">        <span class="meta">@Result</span>(column = <span class="string">"user_name"</span>,property = <span class="string">"userName"</span>,jdbcType = JdbcType.VARCHAR,javaType = String.class),</div><div class="line">        <span class="meta">@Result</span>(column = <span class="string">"nick"</span>,property = <span class="string">"nick"</span>,jdbcType = JdbcType.VARCHAR,javaType = String.class),</div><div class="line">        <span class="meta">@Result</span>(column = <span class="string">"text"</span>,property = <span class="string">"text"</span>,jdbcType = JdbcType.VARCHAR,javaType = String.class)</div><div class="line">    &#125;)</div><div class="line">    <span class="function">List&lt;User&gt; <span class="title">getAllUsers</span><span class="params">()</span></span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line"></div><div class="line"><span class="keyword">package</span> com.beta.study.mapper.secondjdbc;</div><div class="line"></div><div class="line"><span class="keyword">import</span> java.util.List;</div><div class="line"><span class="keyword">import</span> com.beta.study.User;</div><div class="line"><span class="keyword">import</span> org.apache.ibatis.annotations.Mapper;</div><div class="line"><span class="keyword">import</span> org.apache.ibatis.annotations.Result;</div><div class="line"><span class="keyword">import</span> org.apache.ibatis.annotations.Results;</div><div class="line"><span class="keyword">import</span> org.apache.ibatis.annotations.Select;</div><div class="line"><span class="keyword">import</span> org.apache.ibatis.type.JdbcType;</div><div class="line"></div><div class="line"></div><div class="line"><span class="meta">@Mapper</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">SecondUserMapper</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="meta">@Select</span>(<span class="string">"select * from user"</span>)</div><div class="line">    <span class="meta">@Results</span>(value = &#123;</div><div class="line">        <span class="meta">@Result</span>(id = <span class="keyword">true</span>,column = <span class="string">"id"</span>,property = <span class="string">"id"</span>,jdbcType = JdbcType.INTEGER,javaType = Integer.class),</div><div class="line">        <span class="meta">@Result</span>(column = <span class="string">"user_name"</span>,property = <span class="string">"userName"</span>,jdbcType = JdbcType.VARCHAR,javaType = String.class),</div><div class="line">        <span class="meta">@Result</span>(column = <span class="string">"nick"</span>,property = <span class="string">"nick"</span>,jdbcType = JdbcType.VARCHAR,javaType = String.class),</div><div class="line">        <span class="meta">@Result</span>(column = <span class="string">"text"</span>,property = <span class="string">"text"</span>,jdbcType = JdbcType.VARCHAR,javaType = String.class)</div><div class="line">    &#125;)</div><div class="line">    <span class="function">List&lt;User&gt; <span class="title">getAllUsers</span><span class="params">()</span></span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>编写启动类：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> com.beta.study;</div><div class="line"></div><div class="line"><span class="keyword">import</span> org.springframework.boot.SpringApplication;</div><div class="line"><span class="keyword">import</span> org.springframework.boot.autoconfigure.SpringBootApplication;</div><div class="line"></div><div class="line"><span class="meta">@SpringBootApplication</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Main</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception </span>&#123;</div><div class="line">        SpringApplication.run(Main.class, args);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>OK , 运行Main，不出意外，整个项目就跑起来了~<br>如果有疑问，欢迎咨询，邮箱：shiqiu-beta@qq.com</p>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    <div class="content">
+        
+<span class="post-time">
+    最后更新时间：<time datetime="2017-04-11T07:32:52.188Z" itemprop="dateUpdated">2017年4月11日 15:32</time>
+</span><br>
+
+
+        
+    </div>
+    <footer>
+        <a href="https://shiqiupp.github.io">
+            <img src="/img/avatar.jpg" alt="时秋">
+            时秋
+        </a>
+    </footer>
+</blockquote>
+
+        
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Java/">Java</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/SpringBoot/">SpringBoot</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/多数据源/">多数据源</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://shiqiupp.github.io/2017/04/01/springboot-multi-datasources/&title=《SpringBoot 多数据源实例》 — 时秋的博客&pic=https://shiqiupp.github.io/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://shiqiupp.github.io/2017/04/01/springboot-multi-datasources/&title=《SpringBoot 多数据源实例》 — 时秋的博客&source=时秋的博客" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://shiqiupp.github.io/2017/04/01/springboot-multi-datasources/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《SpringBoot 多数据源实例》 — 时秋的博客&url=https://shiqiupp.github.io/2017/04/01/springboot-multi-datasources/&via=https://shiqiupp.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://shiqiupp.github.io/2017/04/01/springboot-multi-datasources/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/2017/04/10/java-fileread/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">Java 文件读取</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2017/03/31/hello-world/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">Hello World</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+</div>
+
+        <footer class="footer">
+
+    <div class="bottom">
+        <p>
+            <span>Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a></span>
+            <span>时秋的博客 &copy; 2017</span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://shiqiupp.github.io/2017/04/01/springboot-multi-datasources/&title=《SpringBoot 多数据源实例》 — 时秋的博客&pic=https://shiqiupp.github.io/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://shiqiupp.github.io/2017/04/01/springboot-multi-datasources/&title=《SpringBoot 多数据源实例》 — 时秋的博客&source=时秋的博客" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://shiqiupp.github.io/2017/04/01/springboot-multi-datasources/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《SpringBoot 多数据源实例》 — 时秋的博客&url=https://shiqiupp.github.io/2017/04/01/springboot-multi-datasources/&via=https://shiqiupp.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://shiqiupp.github.io/2017/04/01/springboot-multi-datasources/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAN4AAADeCAAAAAB3DOFrAAACx0lEQVR42u3aQY6DMAwF0N7/0h1pthT6bSeUxWNVVUXkMVLi+fbrFV/v/+v4zfH767vye4+/TH7fvPDw8PBaSz+7jgs9+1xd4vUTe/d+WA8eHh7eNt71tp5s8deLuD5gks/5evDw8PCew7vevqsldXK0JAcVHh4e3pN5+ZHwq5QADw8P705eXhzn4WwS/lYDiI1ZCx4eHl7MqzbAnvB5Y38PDw8Pb1DUVhtUvSGD3tYfrRMPDw9vA686AtULWKuDWUmTrHBg4OHh4S3lTQaees3+/CVO2m+n5x4eHh7emFctgteWvPkAVi80wcPDw9vByxtavaK5+jqS5y77XwEPDw+vxesNWiWHxzzYrRboUcmOh4eHt4iXbM0TzNp4ohqd4OHh4a3l9aKBwptrtcGS4Dh6KXh4eHjbeL1IdxK/Vrf4vPX1ob+Hh4eHt5RX6JLF8W71kb1BhFGwi4eHhzfg9dpOk4Okdwzk418fwgg8PDy8DbxJMz55ZDV0mLTHonwaDw8Pb8CrLqK3QU8GqvIiGw8PD+9OXjW0rb6aPMjI+1bVaBgPDw/vHl5ScJcDglbzrHcs4eHh4e3jVQOIaoNqPubVizbw8PDwdvDytn3vMJiUxQtePR4eHt4tvGoRnJfFawOLKGLGw8PD28DLm1Krml6TIYDeYAEeHh7eDt6qJDgvyvNRgOQAKA8N4OHh4Y1585GpfKOft7uSgONLmIuHh4e3iNfb+ufDBM0ZhzwgxsPDw1vKexevXiFejV+rI1ynfwY8PDy8DbzeiFUUmxYXVB0jyAt9PDw8vB28yQZdHQuoDhDkL6tZWOPh4eENePnj583+nJ0fWqcrwcPDw3sML8f0wovkFUQxBB4eHt5PeflRUQ0sJiMIX56Ch4eHt43X27LzxySDCL2mWmEyAg8PD28Rr9cA60UV1bK7uoZl/T08PDy8z3f9AWE8St82IQ+gAAAAAElFTkSuQmCC" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: false };
+
+
+
+</script>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@1.5.0/source/js/main.min.js"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@1.5.0/source/js/search.min.js" async></script>
+
+
+
+
+
+
+
+
+<script>
+(function() {
+    var OriginTitile = document.title, titleTime;
+    document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+            document.title = '';
+            clearTimeout(titleTime);
+        } else {
+            document.title = '';
+            titleTime = setTimeout(function() {
+                document.title = OriginTitile;
+            },2000);
+        }
+    });
+})();
+</script>
+
+
+
+</body>
+</html>
