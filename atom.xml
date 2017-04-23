@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://shiqiupp.github.io/"/>
-  <updated>2017-04-11T07:32:49.397Z</updated>
+  <updated>2017-04-23T07:35:25.571Z</updated>
   <id>https://shiqiupp.github.io/</id>
   
   <author>
@@ -20,7 +20,7 @@
     <link href="https://shiqiupp.github.io/2017/04/10/java-fileread/"/>
     <id>https://shiqiupp.github.io/2017/04/10/java-fileread/</id>
     <published>2017-04-10T09:32:46.000Z</published>
-    <updated>2017-04-11T07:32:49.397Z</updated>
+    <updated>2017-04-23T07:35:25.571Z</updated>
     
     <content type="html"><![CDATA[<h1 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h1><p>在Java开发过程中，偶尔需要获取一个文件(最常见的就是获取配置文件)，但是经常遇到找不到文件的异常；通常有两种情况：</p>
 <ol>
@@ -61,7 +61,7 @@
 </blockquote>
 </li>
 </ol>
-<h1 id="文件读取"><a href="#文件读取" class="headerlink" title="文件读取"></a>文件读取</h1><p>文件读取一般有两种方式：</p>
+<h1 id="文件读取"><a href="#文件读取" class="headerlink" title="文件读取"></a>文件读取</h1><h2 id="背景知识"><a href="#背景知识" class="headerlink" title="背景知识"></a>背景知识</h2><p>文件读取一般有两种方式：</p>
 <p>1.使用jdk的File api ：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">File file = <span class="keyword">new</span> File(<span class="string">"文件路径"</span>);</div></pre></td></tr></table></figure></p>
 <p>File构造函数参数为文件的路径，可以是绝对路径(如：D:/Projects/path-study/target/classes/test.properties)，也可以是相对路径(test.properties)；<br>如果是相对路径，那么jdk会根据user.dir属性值+相对路径作为文件的路径；系统属性 user.dir是JVM启动的时候设置的，通常是 Java 虚拟机的调用目录，即执行java命令所在的目录；<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//如果当前工作目录为D:/Projects/path-study  那么下面代码等价</span></div><div class="line">File file = <span class="keyword">new</span> File(<span class="string">"test.properties"</span>);</div><div class="line"></div><div class="line"><span class="comment">// 等价于(其中System.getProperty("user.dir") = D:/Projects/path-study)：</span></div><div class="line">File file = <span class="keyword">new</span> File(System.getProperty(<span class="string">"user.dir"</span>) + <span class="string">"/test.properties"</span>);</div></pre></td></tr></table></figure></p>
 <p>so，用File读取文件有隐藏的路径含义，对于实际项目，开发和线上部署环境经常不同，如果用 File file = new File(“文件路径”);来读取文件，那么文件路径将会很头大，所以可以采用其他方式读取，降低FileNotFoundException出现的概率；当然也可以通过上述路径获取方式来获取文件的路径前缀，但是显得不够直接，容易出问题；</p>
@@ -80,6 +80,19 @@
 <blockquote>
 <p>Xxxx.class.getResource(“test.properties”);<br>读取com/beta/study/test.properties 的文件，无论是本jar，还是其他jar中的文件；只要保证相对路径一致；<br>也可以采用如下方式读取：<br>Xxxx.class.getResource(“/com/beta/study/test.properties”);<br>Xxxx.class.getClassLoader().getResource(“com/beta/study/test.properties”);</p>
 </blockquote>
+<h2 id="代码实战"><a href="#代码实战" class="headerlink" title="代码实战"></a>代码实战</h2><p>读取文件采用java的io流。根据上述背景知识，获取java stream的方式主要有：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//方式1：</span></div><div class="line"><span class="comment">//Xxxx.class.getClassLoader().getResource("test.properties");  返回值也是java.net.URL，两种都行</span></div><div class="line">java.net.URL url = Xxxx.class.getResource(<span class="string">"test.properties"</span>);</div><div class="line">InputStream in = url.openStream() ;</div><div class="line"></div><div class="line"><span class="comment">//方式2：其实getResourceAsStream底层实现和上述基本一致</span></div><div class="line"><span class="comment">//Xxxx.class.getClassLoader().getResourceAsStream("test.properties");  返回值也是java.net.URL，两种都行</span></div><div class="line">InputStream in = Xxxx.class.getResourceAsStream(<span class="string">"test.properties"</span>);</div></pre></td></tr></table></figure></p>
+<p>文件读取只要有如下方式：</p>
+<ul>
+<li>按字符读取</li>
+<li>按字节读取</li>
+<li>按行读取</li>
+</ul>
+<blockquote>
+<p>如下文件读取未对null判断，未对异常进行处理，实际实战需要进行处理。</p>
+</blockquote>
+<p>1.按字符读取<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">InputStream inputStream = Xxxx.class.getResourceAsStream(<span class="string">"test.properties"</span>);</div><div class="line"></div><div class="line"><span class="keyword">try</span> &#123;</div><div class="line">    <span class="keyword">int</span> tempbyte;</div><div class="line">    StringBuilder stringBuilder = <span class="keyword">new</span> StringBuilder();</div><div class="line">    <span class="keyword">while</span> ( ( tempbyte = inputStream.read() ) != -<span class="number">1</span> ) &#123;</div><div class="line">        <span class="keyword">char</span>[] ch = Character.toChars(tempbyte);</div><div class="line">        stringBuilder.append(ch);</div><div class="line">    &#125;</div><div class="line">    System.out.println(stringBuilder);</div><div class="line"></div><div class="line">    inputStream.close();</div><div class="line"></div><div class="line">&#125;<span class="keyword">catch</span> (Exception e) &#123;&#125;</div></pre></td></tr></table></figure></p>
+<p>2.按字节读取<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">InputStream inputStream = Xxxx.class.getResourceAsStream(<span class="string">"test.properties"</span>);</div><div class="line"></div><div class="line"><span class="keyword">try</span> &#123;</div><div class="line">    <span class="keyword">int</span> size = <span class="number">1024</span>;</div><div class="line">    <span class="keyword">byte</span>[] readbytes = <span class="keyword">new</span> <span class="keyword">byte</span>[size];</div><div class="line">    StringBuilder stringBuilder = <span class="keyword">new</span> StringBuilder();</div><div class="line">    <span class="keyword">int</span> readSize = <span class="number">0</span>;</div><div class="line">    <span class="keyword">while</span> ( (readSize = inputStream.read(readbytes,<span class="number">0</span>,size)  ) != -<span class="number">1</span> ) &#123;</div><div class="line">        stringBuilder.append(<span class="keyword">new</span> String(readbytes,<span class="number">0</span>,readSize));</div><div class="line">    &#125;</div><div class="line">    System.out.println(stringBuilder);</div><div class="line"></div><div class="line">    inputStream.close();</div><div class="line"></div><div class="line">&#125;<span class="keyword">catch</span> (Exception e) &#123;&#125;</div></pre></td></tr></table></figure></p>
+<p>3.按行读取<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">InputStream inputStream = Xxxx.class.getResourceAsStream(<span class="string">"test.properties"</span>);</div><div class="line"></div><div class="line"><span class="keyword">try</span> &#123;</div><div class="line">    BufferedReader br = <span class="keyword">new</span> BufferedReader(<span class="keyword">new</span> InputStreamReader(inputStream, <span class="string">"utf-8"</span>));</div><div class="line">    StringBuilder stringBuilder = <span class="keyword">new</span> StringBuilder();</div><div class="line">    String line;</div><div class="line">    <span class="keyword">while</span> ( (line = br.readLine())  != <span class="keyword">null</span>  ) &#123;</div><div class="line">        stringBuilder.append(line);</div><div class="line">    &#125;</div><div class="line">    System.out.println(stringBuilder);</div><div class="line"></div><div class="line">    inputStream.close();</div><div class="line">    </div><div class="line">&#125;<span class="keyword">catch</span> (Exception e) &#123;&#125;</div></pre></td></tr></table></figure></p>
 ]]></content>
     
     <summary type="html">
