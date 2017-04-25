@@ -163,6 +163,61 @@
     <ul class="post-list">
     
         <li class="post-list-item fade">
+            <article id="post-mysql-implicit-conversions"
+  class="article-card article-type-post" itemprop="blogPost">
+
+    <div class="post-meta">
+        <time class="post-time" title="2017年04月25日 16:58" datetime="2017-04-25T08:58:05.000Z"  itemprop="datePublished">2017-04-25</time>
+
+        
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/mysql/">mysql</a></li></ul>
+
+
+
+        
+
+    </div>
+
+    
+
+
+  
+    <h3 class="post-title" itemprop="name">
+      <a class="post-title-link" href="/2017/04/25/mysql-implicit-conversions/">mysql隐式转换</a>
+    </h3>
+  
+
+
+
+
+    <div class="post-content" id="post-content" itemprop="postContent">
+
+    
+        前言在使用mysql过程中，可能经常遇到两类问题：
+
+这个字段明明有索引，但是查询依然很慢，执行计划竟然不走索引？？？
+这个sql看起来没什么问题，为什么就是没有拿到预期的数据？mysql出bug了？
+
+这时候不妨停下来思考一下，是不是查询条件的数据类型和表字段类型不匹配，mysql执行时发生了隐式转换，可以通过 show warnings; 看看是否有警告。
+转换潜规则先去官方文档看看隐式...
+    
+
+        <a href="/2017/04/25/mysql-implicit-conversions/" class="post-more waves-effect waves-button">
+            阅读全文...
+        </a>
+    </div>
+    
+    <div class="post-footer">
+        
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/mysql/">mysql</a></li></ul>
+
+    </div>
+    
+</article>
+
+        </li>
+    
+        <li class="post-list-item fade">
             <article id="post-java-fileread"
   class="article-card article-type-post" itemprop="blogPost">
 
